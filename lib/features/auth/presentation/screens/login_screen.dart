@@ -7,6 +7,7 @@ import 'package:inventory_management/features/auth/presentation/screens/home_scr
 import 'package:inventory_management/features/auth/presentation/screens/register_screen.dart';
 import 'package:inventory_management/features/auth/presentation/widgets/auth_button.dart';
 import 'package:inventory_management/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:inventory_management/features/items/presentation/screens/add_item_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -54,7 +55,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ).showSnackBar(const SnackBar(content: Text("Login Successful!")));
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (context) => const AddItemScreen()),
             );
           }
         },

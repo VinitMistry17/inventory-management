@@ -6,6 +6,8 @@ class ApiUrls {
   static const String loginUrl = "$baseUrl/login";
   static const String registerUrl = "$baseUrl/register";
   static const String logoutUrl = "$baseUrl/logout";
-  
 
+  //items
+  static const String categoriesUrl = "$baseUrl/categories";
+  static const String itemsUrl = "$baseUrl/items";
 }

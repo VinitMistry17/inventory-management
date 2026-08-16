@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventory_management/core/storage/provider/storage_providers.dart';
 import '../../data/models/register_response_model.dart';
 import 'auth_providers.dart';
 
@@ -18,15 +19,6 @@ class RegisterController extends AsyncNotifier<RegisterResponseModel?> {
   }) async {
     state = const AsyncValue.loading();
 
-    final requestPayload = {
-      'name': name,
-      'email': email,
-      'password': password,
-      'password_confirmation': passwordConfirmation,
-    };
-
-    print('🟢 [RegisterScreen] ➜ Register request payload: $requestPayload');
-
     final usecase = ref.read(registerUsecaseProvider);
 
     state = await AsyncValue.guard(() {
@@ -38,15 +30,11 @@ class RegisterController extends AsyncNotifier<RegisterResponseModel?> {
       );
     });
 
-    state.when(
-      data: (response) {
-        print('✅ [RegisterScreen] ← Register response: $response');
-      },
-      error: (err, stack) {
-        print('❌ [RegisterScreen] ← Register error: $err');
-      },
-      loading: () {},
-    );
+    //save token
+    if(state.hasValue && state.value != null){
+      final token = state.value!.token;
+      await ref.read(tokenStorageProvider).saveToken(token);
+    }
   }
 }
 
