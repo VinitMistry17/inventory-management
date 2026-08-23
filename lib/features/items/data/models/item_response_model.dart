@@ -27,7 +27,7 @@ class ItemResponseModel {
       name: json['name'],
       categoryId: json['category_id'],
       purchaseDate: json['purchase_date'],
-      hasExpiry: json['has_expiry'],
+      hasExpiry: json['has_expiry'] == true || json['has_expiry'] == 1,
       expiryDate: json['expiry_date'],
       pricePaid: json['price_paid'].toString(),
       location: json['location'],

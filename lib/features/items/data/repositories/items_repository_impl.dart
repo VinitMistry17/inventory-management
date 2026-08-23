@@ -4,6 +4,8 @@ import 'package:inventory_management/features/items/data/datasources/items_remot
 import 'package:inventory_management/features/items/data/models/add_item_request_model.dart';
 import 'package:inventory_management/features/items/data/models/category_model.dart';
 import 'package:inventory_management/features/items/data/models/document_upload_response_model.dart';
+import 'package:inventory_management/features/items/data/models/item_detail_model.dart';
+import 'package:inventory_management/features/items/data/models/item_list_item_model.dart';
 import 'package:inventory_management/features/items/data/models/item_response_model.dart';
 import 'package:inventory_management/features/items/data/models/photo_upload_response_model.dart';
 import 'package:inventory_management/features/items/domain/repositories/items_repository.dart';
@@ -38,5 +40,25 @@ class ItemsRepositoryImpl implements ItemsRepository {
   @override
   Future<CategoryModel> createCategory(String name) {
     return remoteDatasource.createCategory(name);
+  }
+
+  @override
+  Future<ItemDetailModel> getItemDetail(int itemId) {
+    return remoteDatasource.getItemDetail(itemId);
+  }
+
+  @override
+  Future<void> deleteItem(int itemId) {
+    return remoteDatasource.deleteItem(itemId);
+  }
+
+  @override
+  Future<List<ItemListItemModel>> getItems({int? categoryId, String? search}) {
+    return remoteDatasource.getItems(categoryId: categoryId, search: search);
+  }
+
+  @override
+  Future<void> updateItem(int itemId, AddItemRequestModel request) {
+    return remoteDatasource.updateItem(itemId, request);
   }
 }

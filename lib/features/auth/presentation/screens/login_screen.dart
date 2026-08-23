@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inventory_management/core/constants/validators.dart';
 import 'package:inventory_management/core/errors/app_exception.dart';
+import 'package:inventory_management/core/navigation/main_shell.dart';
 import 'package:inventory_management/features/auth/presentation/providers/login_controller.dart';
 import 'package:inventory_management/features/auth/presentation/screens/home_screen.dart';
 import 'package:inventory_management/features/auth/presentation/screens/register_screen.dart';
 import 'package:inventory_management/features/auth/presentation/widgets/auth_button.dart';
 import 'package:inventory_management/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:inventory_management/features/items/presentation/screens/add_item_screen.dart';
+import 'package:inventory_management/features/items/presentation/screens/item_detail_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -55,7 +57,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ).showSnackBar(const SnackBar(content: Text("Login Successful!")));
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const AddItemScreen()),
+              MaterialPageRoute(
+                builder: (context) => const MainShell(),
+              ),
             );
           }
         },
@@ -110,10 +114,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                 AuthButton(
                   text: isLoading ? "Login..." : "Login",
-                  
-                  onPressed: isLoading ? () {} : () {
-                    _onLoginPressed();
-                  },
+
+                  onPressed: isLoading
+                      ? () {}
+                      : () {
+                          _onLoginPressed();
+                        },
                 ),
 
                 const SizedBox(height: 16),

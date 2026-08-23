@@ -8,11 +8,13 @@ const int _addNewCategoryValue = -1; // special sentinel value dropdown ke liye
 class CategoryDropdown extends ConsumerWidget {
   final int? selectedCategoryId;
   final ValueChanged<int?> onChanged;
+  final ValueChanged<String?>? onCategoryNameChanged;
 
   const CategoryDropdown({
     super.key,
     required this.selectedCategoryId,
     required this.onChanged,
+    this.onCategoryNameChanged,
   });
 
   @override
@@ -53,6 +55,8 @@ class CategoryDropdown extends ConsumerWidget {
               await _showAddCategoryDialog(context, ref);
             } else {
               onChanged(value);
+              final selected = categories.where((c) => c.id == value).firstOrNull;
+              onCategoryNameChanged?.call(selected?.name);
             }
           },
           validator: (value) => value == null ? "Please select a category" : null,
@@ -106,7 +110,7 @@ class CategoryDropdown extends ConsumerWidget {
             final isLoading = createState.isLoading;
             final errorMessage = createState.hasError ? createState.error.toString() : null;
 
-            return AlertDialog(
+            return AlertDialog(   
               title: const Text("Add New Category"),
               content: Column(
                 mainAxisSize: MainAxisSize.min,

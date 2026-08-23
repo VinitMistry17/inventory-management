@@ -10,4 +10,14 @@ class ApiUrls {
   //items
   static const String categoriesUrl = "$baseUrl/categories";
   static const String itemsUrl = "$baseUrl/items";
+
+  //dashboard
+  static const String dashboardUrl = "$baseUrl/dashboard";
+
+  //alert
+  static const String alertsUrl = "$baseUrl/alerts";
+
+  //profile
+  static const String profileUrl = "$baseUrl/profile";
+  static const String reminderTimingUrl = "$baseUrl/settings/reminder-timing";
 }

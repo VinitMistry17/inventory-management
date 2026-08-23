@@ -9,6 +9,8 @@ import 'package:inventory_management/core/network/api_headers.dart';
 import 'package:inventory_management/features/items/data/models/add_item_request_model.dart';
 import 'package:inventory_management/features/items/data/models/category_model.dart';
 import 'package:inventory_management/features/items/data/models/document_upload_response_model.dart';
+import 'package:inventory_management/features/items/data/models/item_detail_model.dart';
+import 'package:inventory_management/features/items/data/models/item_list_item_model.dart';
 import 'package:inventory_management/features/items/data/models/item_response_model.dart';
 import 'package:inventory_management/features/items/data/models/photo_upload_response_model.dart';
 
@@ -25,30 +27,21 @@ class ItemsRemoteDatasource {
         headers: header,
       );
 
-      print('DEBUG CATEGORY FETCH -> statusCode: ${response.statusCode}');
-      print('DEBUG CATEGORY FETCH -> body: ${response.body}');
-
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
         final categories = (data as List)
             .map((json) => CategoryModel.fromJson(json))
             .toList();
-        print('DEBUG CATEGORY FETCH -> parsed count: ${categories.length}');
         return categories;
       } else {
-        print(
-          'DEBUG CATEGORY FETCH -> error message: ${data['message'] ?? 'Failed to load categories'}',
-        );
         throw AppException(
           message: data['message'] ?? 'Failed to load categories',
         );
       }
     } on AppException {
-      print('DEBUG CATEGORY FETCH -> AppException: $this');
       rethrow;
     } catch (e) {
-      print('DEBUG CATEGORY FETCH -> catch error: $e');
       throw AppException(message: 'Network error. Please try again.');
     }
   }
@@ -183,6 +176,105 @@ class ItemsRemoteDatasource {
         throw AppException(
           message: data['message'] ?? 'Failed to create category',
         );
+      }
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException(message: 'Network error. Please try again.');
+    }
+  }
+
+  Future<ItemDetailModel> getItemDetail(int itemId) async {
+    try {
+      final headers = await getAuthHeaders(ref);
+      final url = Uri.parse("${ApiUrls.itemsUrl}/$itemId");
+
+      final response = await http.get(url, headers: headers);
+      print('DEBUG ITEM DETAIL -> statusCode: ${response.statusCode}');
+      print('DEBUG ITEM DETAIL -> body: ${response.body}');
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ItemDetailModel.fromJson(data);
+      } else {
+        throw AppException(message: data['message'] ?? 'Failed to load item');
+      }
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      print('DEBUG ITEM DETAIL -> exception: $e');
+      throw AppException(message: 'Network error. Please try again.');
+    }
+  }
+
+  Future<void> deleteItem(int itemId) async {
+    try {
+      final headers = await getAuthHeaders(ref);
+      final url = Uri.parse("${ApiUrls.itemsUrl}/$itemId");
+
+      final response = await http.delete(url, headers: headers);
+
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        final data = jsonDecode(response.body);
+        throw AppException(message: data['message'] ?? 'Failed to delete item');
+      }
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException(message: 'Network error. Please try again.');
+    }
+  }
+
+  Future<List<ItemListItemModel>> getItems({
+    int? categoryId,
+    String? search,
+  }) async {
+    try {
+      final headers = await getAuthHeaders(ref);
+
+      final queryParams = <String, String>{"sort": "expiry_asc"};
+      if (categoryId != null) queryParams["category"] = categoryId.toString();
+      if (search != null && search.isNotEmpty) queryParams["search"] = search;
+
+      final url = Uri.parse(
+        ApiUrls.itemsUrl,
+      ).replace(queryParameters: queryParams);
+      print('DEBUG GET ITEMS -> url: $url');
+
+      final response = await http.get(url, headers: headers);
+      final data = jsonDecode(response.body);
+      print('DEBUG GET ITEMS -> statusCode: ${response.statusCode}');
+      print('DEBUG GET ITEMS -> body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return (data as List)
+            .map((json) => ItemListItemModel.fromJson(json))
+            .toList();
+      } else {
+        throw AppException(message: data['message'] ?? 'Failed to load items');
+      }
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException(message: 'Network error. Please try again.');
+    }
+  }
+
+  Future<void> updateItem(int itemId, AddItemRequestModel request) async {
+    try {
+      final headers = await getAuthHeaders(ref);
+      final url = Uri.parse("${ApiUrls.itemsUrl}/$itemId");
+
+      final response = await http.put(
+        url,
+        headers: headers,
+        body: jsonEncode(request.toJson()),
+      );
+
+      if (response.statusCode != 200) {
+        final data = jsonDecode(response.body);
+        throw AppException(message: data['message'] ?? 'Failed to update item');
       }
     } on AppException {
       rethrow;

@@ -6,6 +6,7 @@ class WarrantyToggle extends StatelessWidget {
   final ValueChanged<bool> onToggleChanged;
   final DateTime? expiryDate;
   final ValueChanged<DateTime> onExpiryDateSelected;
+  final String? categoryName;
 
   const WarrantyToggle({
     super.key,
@@ -13,16 +14,35 @@ class WarrantyToggle extends StatelessWidget {
     required this.onToggleChanged,
     required this.expiryDate,
     required this.onExpiryDateSelected,
+    this.categoryName,
   });
+
+  bool get _isInsurance => categoryName == "Insurance";
+
+  String get _dateLabel {
+    if (_isInsurance) return "Renewal Date";
+    if (categoryName == "Documents") return "Expiry Date";
+    return "Warranty End Date"; // Electronics/Furniture/Books/Shoes + default
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isInsurance) {
+      return DatePickerField(
+        label: _dateLabel,
+        selectedDate: expiryDate,
+        onDateSelected: onExpiryDateSelected,
+        firstDate: DateTime.now(),
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "Does this item have a warranty / renewal?",
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
 
@@ -60,11 +80,17 @@ class WarrantyToggle extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                Icon(
+                  Icons.info_outline,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -105,7 +131,9 @@ class _ToggleOption extends StatelessWidget {
           color: isSelected ? colorScheme.primary : colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: isSelected ? colorScheme.primary : colorScheme.outlineVariant,
+            color: isSelected
+                ? colorScheme.primary
+                : colorScheme.outlineVariant,
           ),
         ),
         child: Text(

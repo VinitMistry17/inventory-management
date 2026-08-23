@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inventory_management/core/constants/validators.dart';
 import 'package:inventory_management/core/errors/app_exception.dart';
+import 'package:inventory_management/core/navigation/main_shell.dart';
 import 'package:inventory_management/features/auth/presentation/providers/register_controller.dart';
 import 'package:inventory_management/features/auth/presentation/screens/home_screen.dart';
 import 'package:inventory_management/features/auth/presentation/screens/login_screen.dart';
@@ -59,7 +60,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             );
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (context) => const MainShell()),
             );
           }
         },
